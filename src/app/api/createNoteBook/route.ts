@@ -36,9 +36,9 @@ export async function POST(req:Request){
 
         if(!response.ok) throw new Error('Failed to fetch the image');
 
-        const imageBlob = await response.blob();
+        // const imageBlob = await response.blob();
 
-        
+
 
         return NextResponse.json({
             note_id: note_ids[0].insertedId
