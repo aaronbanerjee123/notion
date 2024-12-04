@@ -14,6 +14,7 @@ type Props = {
   params: {
     noteId: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 const NotebookPage = async ({ params: { noteId } }: Props) => {
