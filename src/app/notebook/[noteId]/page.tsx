@@ -9,15 +9,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getUserInfo } from "@/lib/clerk-server";
 import TipTapEditor from "@/components/TipTapEditor";
+ 
+type Params = Promise<{ noteId: string }>
 
-type Props = {
-  params: {
-    noteId: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-const NotebookPage = async ({ params: { noteId } }: Props) => {
+const NotebookPage = async (props:{params:Params}) => {
+  const params = await props.params;
+  const noteId = params.noteId;
   const { userId } = await auth();
 
   if (!userId) {
