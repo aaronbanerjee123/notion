@@ -5,9 +5,11 @@ export default function Home() {
   const { user } = useUser()
 
   if (!user) {
+    return(
     <div className="flex justify-center items-center min-h-screen">
     <SignIn />
   </div>
+    )
   }
 
   return <div>Welcome!</div>
