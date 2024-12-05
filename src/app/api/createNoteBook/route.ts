@@ -3,7 +3,7 @@ import { $notes } from "@/lib/db/schema";
 import { generateImage, generateImagePrompt } from "@/lib/openai";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
+import{put} from '@vercel/blob';
 export async function POST(req:Request){
     const { userId } = await auth();
 
@@ -24,10 +24,25 @@ export async function POST(req:Request){
             return new NextResponse("Failed to generate image",{status:500})
         }
 
+        const image_response = await fetch(image_url);
+        
+        if(!image_response){
+            throw new Error('Failed to fetch the image');
+        }
+
+        const blobData = await image_response.blob();
+
+        const {url:permanentUrl} = await put(
+            `notes/${userId}-${Date.now()}.png`,
+            blobData,
+            {access:'public'}
+        )
+        
+
         const note_ids = await db.insert($notes).values({
             name,
             userId,
-            imageUrl:image_url
+            imageUrl:permanentUrl
         }).returning({
             insertedId:$notes.id
         });
