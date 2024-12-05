@@ -3,12 +3,13 @@ import React from "react";
 import { $notes } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { UsersRoundIcon } from "lucide-react";
+import { Delete, UsersRoundIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getUserInfo } from "@/lib/clerk-server";
 import TipTapEditor from "@/components/TipTapEditor";
+import DeleteButton from "@/components/DeleteButton";
  
 type Params = Promise<{ noteId: string }>
 
@@ -33,6 +34,7 @@ const NotebookPage = async (props:{params:Params}) => {
 
   const user = await getUserInfo();
 
+
   return (
     <div className="min-h-screen grainy p-8">
       <div className="max-w-4xl mx-auto">
@@ -51,7 +53,7 @@ const NotebookPage = async (props:{params:Params}) => {
           <span className="inline-block mx-1">/</span>
           <span className="text-stone-500 font-semibold">{note.name}</span>
 
-        <div className="ml-auto">Delete Button</div>
+        <DeleteButton noteId={parseInt(noteId)}/>
         </div>
 
         <div className="h-4"></div>
