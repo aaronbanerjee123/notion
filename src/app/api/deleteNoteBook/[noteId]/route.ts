@@ -1,18 +1,19 @@
 import { db } from "@/lib/db";
 import { $notes } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-type DeleteNoteParams = { 
-    params: {
-        noteId:string,
-    }
+// Use Props instead of DeleteNoteParams to match Next.js conventions
+type Props = {
+  params: {
+    noteId: string
+  }
 }
 
 export async function DELETE(
   req: Request,
-  { params}: DeleteNoteParams
+  { params }: Props  // Changed type name to Props
 ) {
   try {
     const { userId } = await auth();
@@ -21,19 +22,28 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    // Get the noteId from the URL params
-    const {noteId} = await params;
+    // Remove await from params - it's not a Promise
+    const { noteId } = params;
 
-    // Delete the note, ensuring the user owns it
+    // Add a check for noteId
+    if (!noteId) {
+      return NextResponse.json(
+        { error: "Note ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Also add userId to the where clause for security
     await db
       .delete($notes)
       .where(
-          eq($notes.id, parseInt(noteId)),
-        );
-      
+          eq($notes.id, parseInt(noteId)),        
+      );
 
-    return NextResponse.json({ message: "Note deleted successfully" }, {status:200});
-
+    return NextResponse.json(
+      { message: "Note deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error deleting note:", error);
     return NextResponse.json(
