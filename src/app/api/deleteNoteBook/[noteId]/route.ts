@@ -5,16 +5,17 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 // Use Props instead of DeleteNoteParams to match Next.js conventions
-type Props = {
-  params: {
-    noteId: string
-  }
-}
+type Params = Promise<{ noteId: string }>
+
 
 export async function DELETE(
   req: Request,
-  { params }: Props  // Changed type name to Props
+  props : { params : Params}  // Changed type name to Props
 ) {
+
+  const params = await props.params;
+
+  const noteId = params.noteId
   try {
     const { userId } = await auth();
 
