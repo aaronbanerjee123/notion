@@ -43,12 +43,3 @@ export async function POST(req:Request){
     }
 }
 
-export async function DELETE(req:Request){
-    try {
-        const data = req.json();
-
-        const {noteId} = data;
-    } catch (error) {
-        
-    }
-}
